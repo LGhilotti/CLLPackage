@@ -6,8 +6,8 @@
 # install.packages("usethis")
 #usethis::use_git_config(
 #  scope = "project",
-#  user.name = "John Doe",
-#  user.email = "john@example.org"
+#  user.name = "Lorenzo Ghilotti",
+#  user.email = "lorenzoghilotti96@gmail.com"
 #)
 #usethis::use_git()
 
