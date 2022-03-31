@@ -40,17 +40,24 @@ Create a table to present the number of total `deaths` by country, sorted by the
 
 ```{r}
 data <- as_tibble(x)
-data1 <- data %>%
+data_reduced <- data %>%
   select(administrative_area_level_1, date, deaths) %>% 
-  filter(!is.na(deaths)) %>% 
-  rename(Country = administrative_area_level_1)
+  rename(Country = administrative_area_level_1) %>% 
+  filter( !is.na(deaths) & !(Country %in% c("Costa Atlantica","Grand Princess", "Diamond Princess")))
 
-data2 <- data1 %>% 
+
+country_names <- data %>% 
+  rename(Country = administrative_area_level_1) %>% 
+  distinct(Country)
+  
+
+data_grouped <- data_reduced %>% 
   group_by(Country) %>% 
   arrange(desc(date), .by_group=T) %>% 
   slice(1)
 
-data3 <- data2 %>% 
+data_result <- country_names %>% 
+  left_join(data_grouped) %>% 
   arrange(desc(deaths))
 
 
@@ -65,6 +72,41 @@ Aggregate data by month and use only 2020 data.
 Compare the country different situations. Therefore organize the table as shown in the example below: with one row for each country (`country` the primary key of the table), sort the lines by the total deaths (i.e. `Total Deaths`) like in previous table, and show this quantity split on the time interval you chose. Therefore one more column for each period (i.e. one more column for each month) in chronological order from left to right (i.e. therefore column names will be `2020-01`, `2020-02`, `2020-03`, ...). 
 
 Example of result:
+
+```{r}
+library(lubridate)
+data <- as_tibble(x)
+data_reduced <- data %>%
+  select(administrative_area_level_1, date, deaths) %>% 
+  rename(Country = administrative_area_level_1) %>% 
+  filter( !is.na(deaths) & !(Country %in% c("Costa Atlantica","Grand Princess", "Diamond Princess")))
+
+
+data_2020 <- data_reduced %>%
+  filter(year(date) == 2020)
+
+data_month <- data_2020 %>% 
+  mutate(month = month(date, label=T)) %>% 
+  group_by(Country, month) %>% 
+  filter(date == max(date)) %>% 
+  ungroup() %>% 
+  group_by(Country) %>% 
+  arrange(date, .by_group=T) %>% 
+  mutate( deaths_per_month = deaths - lag(deaths, default = 0)) %>% 
+  mutate( total_deaths = sum(deaths_per_month) ) %>% # check later
+  select(-c(date, deaths)) %>% 
+  pivot_wider(names_from = month, values_from = deaths_per_month) %>% 
+  select(Country, total_deaths, gen,feb,mar,apr,mag,giu,lug,ago,set,ott,nov,dic)
+
+country_names <- data %>% 
+  rename(Country = administrative_area_level_1) %>% 
+  distinct(Country)
+  
+
+data_result <- country_names %>% 
+  left_join(data_month) %>% 
+  arrange(desc(total_deaths))
+```
 
 ```{r}
 tibble(
