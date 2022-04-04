@@ -1,6 +1,6 @@
 ## generate a dataset
 set.seed(8675309)
-n = 1000
+n = 10000
 x1 = rnorm(n)
 x2 = rnorm(n)
 y = 1 + 0.5*x1 + 0.2*x2 + rnorm(n)
@@ -19,3 +19,13 @@ beta_min = lm(y ~ x1 + x2)$coeff
 norm(y-X%*% beta_min )^2
 norm(y-X%*% beta_estimated_gd )^2
 norm(y-X%*% beta_estimated_sd )^2
+
+
+library(tictoc)
+tic()
+kfold_cv_seq(X,y,k=1000)
+toc()
+
+tic()
+kfold_cv_parallel(X,y,k=1000)
+toc()

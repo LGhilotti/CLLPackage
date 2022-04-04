@@ -16,6 +16,8 @@ kfold_cv_seq <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, ste
   n <- length(y)
   p <- ncol(X)
   Xy <- cbind(X,y)
+  set.seed(8675309)
+
   Xy_perm <- Xy[sample(1:n, size = n, replace = FALSE ),]
   X_perm <- Xy_perm[,1:p]
   y_perm <- Xy_perm[,p+1]
@@ -28,6 +30,7 @@ kfold_cv_seq <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, ste
     X_train <- X_perm[-range_test,]
     y_test <-  y_perm[range_test]
     y_train <- y_perm[-range_test]
+    set.seed(8675309)
 
     beta0 <- rnorm(p, 0, 1e+4)
     if (algorithm == "sd"){
@@ -83,3 +86,63 @@ kfold_cv_lm_seq <- function(X, y, k=5){
   return (mse)
 
 }
+
+
+mymap <- function(i_test, X_perm, y_perm, end_index_folds, algorithm,  tol, maxit, stepsize, verbose){
+
+  range_test <- (end_index_folds[i_test]+1):end_index_folds[i_test+1]
+  X_test <-  X_perm[range_test,]
+  X_train <- X_perm[-range_test,]
+  y_test <-  y_perm[range_test]
+  y_train <- y_perm[-range_test]
+  set.seed(8675309)
+
+  beta0 <- rnorm(ncol(X_perm), 0, 1e+4)
+  if (algorithm == "sd"){
+    beta_est <- linear_sd_optim(beta0, X_train, y_train, tol, maxit, verbose)
+  } else if (algorithm == "gd") {
+    beta_est <- linear_gd_optim(beta0, X_train, y_train,  tol, maxit, stepsize, verbose)
+  }
+  else {
+    print("Not valid option")
+    break
+  }
+
+  y_pred <- predict_y(beta_est, X_test)
+
+  return (compute_mse(y_test, y_pred))
+}
+
+
+kfold_cv_parallel <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, stepsize = 1e-3, verbose = FALSE){
+  set.seed(8675309)
+  n <- length(y)
+  p <- ncol(X)
+  Xy <- cbind(X,y)
+  Xy_perm <- Xy[sample(1:n, size = n, replace = FALSE ),]
+  X_perm <- Xy_perm[,1:p]
+  y_perm <- Xy_perm[,p+1]
+  card_folds <- c(rep(floor(n/k)+1, n%%k ), rep(floor(n/k), k- n%%k) )
+  end_index_folds <- c(0,cumsum(card_folds))
+
+  n_cpus <- parallel::detectCores()
+  cluster <- makeCluster(n_cpus-1, type = "SOCK")
+  registerDoSNOW(cluster)
+
+  # export dependencies in cluster
+  clusterExport(cluster, list("linear_sd_optim","linear_gd_optim","predict_y","compute_mse","gradient"))
+
+  mse <- snow::parLapply(cl = cluster,
+                  x = 1:k,
+                  fun = mymap, X_perm = X_perm , y_perm = y_perm, end_index_folds = end_index_folds,
+                  algorithm = algorithm, tol = tol, maxit = maxit, stepsize = stepsize, verbose= verbose ) %>%
+    unlist() %>% # list to vector
+    mean()
+
+  stopCluster(cluster)
+
+
+  return (mse)
+
+}
+
