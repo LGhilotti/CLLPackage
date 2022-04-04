@@ -1,4 +1,18 @@
 
+#' linear_gd_optim
+#'
+#' @param beta0 [numeric] Initial values of coefficients
+#' @param X [numeric] Matrix design
+#' @param y [numeric] Response vector
+#' @param tol [numeric] Tolerance to implement a stop rule for the algorithm
+#' @param maxit [numeric] Maximum number of iterations
+#' @param stepsize [numeric] Stepsize
+#' @param verbose [logical] TRUE if you want display messages; FALSE otherwise
+#'
+#' @return [numeric] estimated coefficients through gradient algorithm
+#' @export
+#'
+#' @examples
 linear_gd_optim <- function(beta0, # beta(0)
                             X, # data predictors
                             y, # response variable
