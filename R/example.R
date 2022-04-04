@@ -21,11 +21,11 @@
 #norm(y-X%*% beta_estimated_sd )^2
 
 
-library(tictoc)
-tic()
-kfold_cv_seq(X,y,k=1000)
-toc()
+#library(tictoc)
+#tic()
+#kfold_cv_seq(X,y,k=1000)
+#toc()
 
-tic()
-kfold_cv_parallel(X,y,k=1000)
-toc()
+#tic()
+#kfold_cv_parallel(X,y,k=1000)
+#toc()
