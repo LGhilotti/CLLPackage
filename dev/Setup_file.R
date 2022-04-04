@@ -15,9 +15,9 @@
 # * create development folder -----------------------------------------------
 
 # avoid problem with the dev scripts: dev/package-utility.R (this file)
-dir.create("dev")
+#dir.create("dev")
 # save this file in `dev` as `setup.R`
-usethis::use_build_ignore("dev")
+#usethis::use_build_ignore("dev")
 # now you can save or move this file in "dev"
 
 
