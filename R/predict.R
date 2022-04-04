@@ -12,6 +12,23 @@ compute_mse <- function(y_observed, y_predicted){
 }
 
 
+#' kfold_cv_seq
+#'
+#' This function provides a linear model estimate through a k-fold cross validation method.
+#'
+#' @param X [matrix] matrix of the covariates
+#' @param y [vector] vector of the respose variable
+#' @param k [numeric] the number of folds
+#' @param algorithm [string] specifies "sd" for the steepest descent method or "gd" for the gradient descent method
+#' @param tol [numeric] tolerance for the stoppage criteria of the algorithm
+#' @param maxit [numeric] maximum number of iterations of the algorithm when convergence is not reached
+#' @param stepsize [numeric]
+#' @param verbose [logical]
+#'
+#' @return [numeric] the function returns the Mean Square Error of the model
+#' @export
+#'
+#' @examples
 kfold_cv_seq <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, stepsize = 1e-3, verbose = FALSE){
   n <- length(y)
   p <- ncol(X)
