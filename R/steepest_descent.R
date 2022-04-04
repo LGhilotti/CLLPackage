@@ -1,4 +1,16 @@
 
+#' Steepest descend algorithm
+#'
+#' @param beta0 [numeric] Starting point of the iterative algorithm
+#' @param X [numeric] Design matrix
+#' @param y [numeric] Data
+#' @param tol [numeric] tolerance for stopping criteria
+#' @param maxit [numeric] maximum number of iterations for stopping criteria
+#' @param verbose [character] verbose = TRUE prints some information on error and number of iterations
+#'
+#' @return [numeric] estimated minimum point via steepest descend algorithm
+#' @export
+#'
 linear_sd_optim <- function(beta0, # beta(0)
                             X, # data predictors
                             y, # response variable
