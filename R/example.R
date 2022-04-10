@@ -29,3 +29,16 @@
 #tic()
 #kfold_cv_parallel(X,y,k=1000)
 #toc()
+
+
+
+
+
+
+# debug linea gd optim
+#print(paste0("no break"))
+#if (verbose == TRUE){
+#print(paste0("Gradient at iteration ",it-1," is: ",as.vector(grad_L)))
+#print(paste0("Step_t at iteration ",it-1," is: ",step_t))
+# print(paste0("Error at iteration ",it-1," is: ",err))
+#}

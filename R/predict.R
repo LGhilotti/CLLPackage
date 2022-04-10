@@ -1,18 +1,18 @@
 
 #' kfold_cv_seq
 #'
-#' This function provides a linear model estimate through a k-fold cross validation method.
+#' This function provides a MSE estimate of linear model predictions through a k-fold cross validation method.
 #'
-#' @param X [matrix] matrix of the covariates
-#' @param y [vector] vector of the respose variable
-#' @param k [numeric] the number of folds
-#' @param algorithm [string] specifies "sd" for the steepest descent method or "gd" for the gradient descent method
-#' @param tol [numeric] tolerance for the stoppage criteria of the algorithm
-#' @param maxit [numeric] maximum number of iterations of the algorithm when convergence is not reached
-#' @param stepsize [numeric]
-#' @param verbose [logical]
+#' @param X [matrix] Design matrix
+#' @param y [vector] Response vector
+#' @param k [numeric] Number of folds
+#' @param algorithm [string] "sd" for steepest descent method; "gd" for gradient descent method
+#' @param tol [numeric] Tolerance for stopping criteria
+#' @param maxit [numeric] Maximum number of iterations for stopping criteria
+#' @param stepsize [numeric] Stepsize
+#' @param verbose [logical] verbose = TRUE prints some information on errors and number of iterations
 #'
-#' @return [numeric] the function returns the Mean Square Error of the model
+#' @return [numeric] Mean Squared Error
 #' @export
 #'
 #' @examples
@@ -62,7 +62,23 @@ kfold_cv_seq <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, ste
 
 
 
-
+#' kfold_cv_parallel
+#'
+#' This function provides an MSE estimate of linear model predictions through a parallel k-fold cross validation method.
+#'
+#' @param X [numeric] Design matrix
+#' @param y [numeric]Response vector
+#' @param k [numeric] Number of folds
+#' @param algorithm [string] "sd" for steepest descent method; "gd" for gradient descent method
+#' @param tol [numeric] Tolerance for stopping criteria
+#' @param maxit [numeric] Maximum number of iterations for stopping criteria
+#' @param stepsize [numeric] Stepsize
+#' @param verbose [logical] verbose = TRUE prints some information on errors and number of iterations
+#'
+#' @return [numeric] Mean Squared Error
+#' @export
+#'
+#' @examples
 kfold_cv_parallel <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, stepsize = 1e-3, verbose = FALSE){
   set.seed(8675309)
   n <- length(y)
@@ -82,16 +98,16 @@ kfold_cv_parallel <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000
   clusterExport(cluster, list("linear_sd_optim","linear_gd_optim","predict_y","compute_mse","gradient"))
 
   mse <- snow::parLapply(cl = cluster,
-                  x = 1:k,
-                  fun = mymap, X_perm = X_perm , y_perm = y_perm, end_index_folds = end_index_folds,
-                  algorithm = algorithm, tol = tol, maxit = maxit, stepsize = stepsize, verbose= verbose ) %>%
+                         x = 1:k,
+                         fun = mymap, X_perm = X_perm , y_perm = y_perm, end_index_folds = end_index_folds,
+                         algorithm = algorithm, tol = tol, maxit = maxit, stepsize = stepsize, verbose= verbose ) %>%
     unlist() %>% # list to vector
     mean()
 
   stopCluster(cluster)
 
-
   return (mse)
 
 }
+
 

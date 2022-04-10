@@ -1,14 +1,15 @@
-
-#' Steepest descend algorithm
+#' linear_sd_optim
+#'
+#' This function returns the minimum point via steepest descend algorithm
 #'
 #' @param beta0 [numeric] Starting point of the iterative algorithm
 #' @param X [numeric] Design matrix
-#' @param y [numeric] Data
-#' @param tol [numeric] tolerance for stopping criteria
-#' @param maxit [numeric] maximum number of iterations for stopping criteria
-#' @param verbose [character] verbose = TRUE prints some information on error and number of iterations
+#' @param y [numeric] Response vector
+#' @param tol [numeric] Tolerance for stopping criteria
+#' @param maxit [numeric] Maximum number of iterations for stopping criteria
+#' @param verbose [character] verbose = TRUE prints some information on errors and number of iterations
 #'
-#' @return [numeric] estimated minimum point via steepest descend algorithm
+#' @return [numeric] Estimated minimum point via steepest descend algorithm
 #' @export
 #'
 linear_sd_optim <- function(beta0, # beta(0)
@@ -31,12 +32,11 @@ linear_sd_optim <- function(beta0, # beta(0)
     beta_new <- beta_old - step_t * grad_L
     it <- it + 1
     err <- max(abs(beta_new - beta_old))
-    if (verbose == TRUE){
+    #if (verbose == TRUE){
       #print(paste0("Gradient at iteration ",it-1," is: ",as.vector(grad_L)))
-      print(paste0("Step_t at iteration ",it-1," is: ",step_t))
-      print(paste0("Error at iteration ",it-1," is: ",err))
-
-    }
+    #  print(paste0("Step_t at iteration ",it-1," is: ",step_t))
+    #  print(paste0("Error at iteration ",it-1," is: ",err))
+    #}
 
   }
   if (verbose==TRUE){

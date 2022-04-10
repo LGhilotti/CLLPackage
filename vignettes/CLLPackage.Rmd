@@ -1,0 +1,118 @@
+---
+title: "CLLPackage"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{CLLPackage}
+  %\VignetteEngine{knitr::rmarkdown}
+  \VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(CLLPackage)
+```
+
+The aim of this package is to provide functions that estimate coefficients of a linear model through two different methods, the \textit{gradient descend} and the $\textit{steepest descend}$ methods. Moreover, a $k$-folds cross-validation function is also implemented both in a sequential way and in a parallel one.
+
+
+## Gradient descend method
+This function implements the gradient descend optimization applied to linear models $$Y = X\beta+\varepsilon$$
+where $X$ is the design matrix, $Y$ a response variable, $\beta$ a coefficients vector and $\varepsilon$ a normal random noise.
+Gradient descend method computes the coefficients that minimize the loss function
+$$L=(X\beta-Y)^2$$
+This is an iterative algorithm, that computes an estimate of $\beta$ at each step and stops only when some stopping rule is reached, i.e. when a maximum number of iterations is reached or when the new estimate improvement is lower than a certain value, called $\textit{tolerance}$. Both the tolerance and the maximum number of iterations can be chosen by the user.
+At each step, estimates are updated using the gradient of the loss function evaluated in the estimate at previous step, multiplied by the $\textit{stepsize}$ $\gamma$, that can be chosen by the user. \ The following is an example of function $\texttt{ linear_gd_optim()}$. Comparing the estimates obtained with $\textit{gradient descend}$ method and the ones computed by $\texttt{lm()}$ R function, it is clear that estimates are quite similar.
+
+```{r}
+set.seed(8675309)
+n<-10000
+x1<-rnorm(n)
+x2<-rnorm(n)
+y<-1 + 0.5*x1 + 0.2*x2 + rnorm(n)
+
+beta0 <- rnorm(3,2,1)
+X<-cbind(rep(1,n),x1,x2)
+
+# beta estimated with gradient descend method
+(beta_estimated_gd <- linear_gd_optim(beta0, X, y, maxit = 1000, stepsize = 1e-5, tol=1e-5))
+
+# beta estimated with OLS
+(beta_min = lm(y ~ x1 + x2)$coeff)
+```
+
+
+
+
+
+## Steepest descend method
+This is an iterative method, as the previous one, which as well computes the coefficients that minimize the loss function
+$$L=(X\beta-Y)^2$$
+At each step, estimates are updated using the gradient of the loss function evaluated at the estimate at previous step, multiplied by a a scalar value $step_t$ which takes into account the values of the Hessian matrix of $L$ and of its gradient both evaluated in the estimate at previous step. This is the main difference with respect to  $\textit{gradient descend}$ method, where the  $\textit{stepsize}$ was chosen by the user and constant during the entire algorithm. Similarly to  $\textit{gradient descend}$ method, $\textit{steepest descend}$ algorithm stops when a maximum number of iterations is reached or when the new estimate improvement is lower than a certain value, called $\textit{tolerance}$. Both the tolerance and the maximum number of iterations can be chosen by the user. \ The following is an example of function $\texttt{ linear_sd_optim()}$. Comparing the estimates obtained with $\textit{steepest descend}$ method and the ones computed by $\texttt{lm()}$ R function, it is clear that estimates are quite similar.
+
+```{r}
+# beta estimated with gradient descend method
+(beta_estimated_sd <- linear_sd_optim(beta0, X, y, maxit = 1000, tol=1e-3))
+
+# beta estimated with OLS
+(beta_min <- lm(y ~ x1 + x2)$coeff)
+```
+
+### Comparison between gradiend and steepest descend methods
+As said before, the main difference between the two methods consists of $\textit{stepsize}$ choice, which modulates step length along the direction specified by the gradient: in $\textit{gradient descend}$ algorithm it is chosen by the user and remains the same for the whole iterative process, in $\textit{steepest descend}$ methods it is computed by the algorithm based on the previous estimate of $\beta$, thus it better fits the data. Two main issues that can be encountered performing $\textit{gradient descend}$ method are the following ones:
+
+1. a pre-specified too large $\textit{stepsize}$ can result in overcoming the value of $\beta$ that minimizes the loss function and in continous bouncing from a non-optimal solution to another one. In the following example, the error does not decrease with iterations, even reaching $Inf$ value.
+
+
+```{r}
+beta0 <- c(0,0,0)
+# beta estimated with gradient descend method
+beta_estimated_gd <- linear_gd_optim(beta0, X, y, maxit = 10000, stepsize = 1e-3, tol=1e-3)
+
+```
+GRAFICO CON PUNTI DELLE SOLUZIONI???? 
+
+2. Due to the fact that $stepsize$ value is set at the beginning and remains constant during the algorithm, it is important to choose values for $stepsize$ and $tolerance$ with the same order of magnitude. Otherwise, if $stepsize$ is too small with respect to $tolerance$, the algorithm could stop too early having no chance to reach the solution to the minimization problem. In the following example, comparing estimates provided by $\texttt{linear_gd_optim()}$ and the ones provided by $\texttt{lm()}$ it is clear that the $\textit{gradient descend}$ method could not reach the minimum point.
+
+```{r}
+beta0 <- c(0,0,0)
+X<-cbind(rep(1,n),x1,x2)
+
+# beta estimated with gradient descend method
+(beta_estimated_gd <- linear_gd_optim(beta0, X, y, maxit = 10000, stepsize = 1e-6, tol=1e-3))
+
+# beta estimated with OLS
+(beta_min = lm(y ~ x1 + x2)$coeff)
+
+```
+
+$\textit{Steepest descend}$ method solves the two issues described before by computing the $stepsize$ inside the algorithm taking into account the previous estimate of $\beta$.
+
+
+
+## Cross-validation
+The package includes a sequential ($\texttt{kfold_cv_seq()}$) and a parallel ($\texttt{kfold_cv_parallel()}$) implementation of a $\textit{k-fold cross-validation}$, which returns an estimate of the $\textit{Mean Squared Error (MSE)}$ of predictions based on the linear model with estimated $\beta$ via $steepest$ or $gradient$ descend method, according to the choice specified by the user (default option is $\textit{steepest descend}$). In the following example, $MSE$ computed via $\texttt{kfold_cv_seq()}$, $\texttt{kfold_cv_parallel()}$ and $lm()$ are consistent. Moreover, the execution time of $\texttt{kfold_cv_seq()}$ is longer than $\texttt{kfold_cv_parallel()}$, as expected. It is reasonable that parallel CV gain in terms of time is higher when fixed costs related to cluster creation and splitting of the job in different cores are compensated.
+
+```{r, warning=F}
+library(tictoc)
+# Sequential CV
+tic()
+MSE_seq <- kfold_cv_seq(X,y,k=1000)
+toc()
+
+# Parallel CV
+tic()
+MSE_parallel <- kfold_cv_parallel(X,y,k=1000)
+toc()
+
+# lm MSE
+MSE <- mean(lm(y ~ x1 + x2)$residuals^2)
+
+```
+To implement parallel CV, library $\texttt{doSNOW}$ has been used and $\textit{Map-Reduce paradigm}$ has been adopted: $map$ function includes data splitting into train and test sets, computing $\beta$ estimates, computing predictions and, finally, MSE. $Reduce$ function is mean computation of the $k$ MSE obtained during $map$ process.
+

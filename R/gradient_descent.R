@@ -1,15 +1,17 @@
 
 #' linear_gd_optim
 #'
-#' @param beta0 [numeric] Initial values of coefficients
-#' @param X [numeric] Matrix design
-#' @param y [numeric] Response vector
-#' @param tol [numeric] Tolerance to implement a stop rule for the algorithm
-#' @param maxit [numeric] Maximum number of iterations
-#' @param stepsize [numeric] Stepsize
-#' @param verbose [logical] TRUE if you want display messages; FALSE otherwise
+#' This function returns the minimum point via gradient algorithm
 #'
-#' @return [numeric] estimated coefficients through gradient algorithm
+#' @param beta0 [numeric] Starting point of the iterative algorithm
+#' @param X [numeric] Design matrix
+#' @param y [numeric] Response vector
+#' @param tol [numeric] Tolerance for stopping criteria
+#' @param maxit [numeric] Maximum number of iterations for stopping criteria
+#' @param stepsize [numeric] Stepsize
+#' @param verbose [logical] verbose = TRUE prints some information on errors and number of iterations
+#'
+#' @return [numeric] Estimated minimum point via gradient algorithm
 #' @export
 #'
 #' @examples
@@ -31,18 +33,17 @@ linear_gd_optim <- function(beta0, # beta(0)
     beta_new <- beta_old - stepsize * gradient(beta_old, X, y)
     it <- it + 1
     err <- norm(beta_new - beta_old, type="i")
-    if (verbose == TRUE){
-      #print(paste0("Gradient at iteration ",it-1," is: ",as.vector(grad_L)))
-      print(paste0("Step_t at iteration ",it-1," is: ",step_t))
-      print(paste0("Error at iteration ",it-1," is: ",err))
-    }
-
+    if(is.infinite(err)) break
   }
   if (verbose==TRUE){
-    if (err > tol)  print(paste0("Error after ", maxit, " iterations is: ", err))
+    if ((!is.infinite(err)) & (err > tol))  print(paste0("Error after ", maxit, " iterations is: ", err))
+    else if (is.infinite(err)) print(paste0("Infinite error after ", it, " iterations"))
     else print(paste0("Error less than ", tol, " after ", it, " iterations"))
   }
 
   return (as.vector(beta_new))
 
 }
+
+
+

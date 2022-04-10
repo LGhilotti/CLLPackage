@@ -1,10 +1,10 @@
-#' Gradient
+#' gradient
 #'
 #' @param beta [numeric] Point where to evaluate the gradient
 #' @param X [numeric] Design matrix
-#' @param y [numeric] Data
+#' @param y [numeric] Response vector
 #'
-#' @return [numeric] The gradient of the function
+#' @return [numeric] Gradient of loss function in linear models
 #'
 #'
 gradient <- function(beta, X,y) {
