@@ -6,6 +6,7 @@
 #'
 #' @return [numeric] Gradient of loss function in linear models
 #'
+#' @export
 #'
 gradient <- function(beta, X,y) {
   2*t(X)%*%(X%*%beta -y)
@@ -13,6 +14,15 @@ gradient <- function(beta, X,y) {
 
 
 
+#' Title
+#'
+#' @param beta_hat
+#' @param X_test
+#'
+#' @return
+#' @export
+#'
+#' @examples
 predict_y <- function(beta_hat, X_test){
 
   return (X_test %*% beta_hat)
@@ -22,7 +32,15 @@ predict_y <- function(beta_hat, X_test){
 
 
 
-
+#' Title
+#'
+#' @param y_observed
+#' @param y_predicted
+#'
+#' @return
+#' @export
+#'
+#' @examples
 compute_mse <- function(y_observed, y_predicted){
 
   return (mean((y_observed - y_predicted)^2))
@@ -33,9 +51,23 @@ compute_mse <- function(y_observed, y_predicted){
 
 
 
-
-
-mymap <- function(i_test, X_perm, y_perm, end_index_folds, algorithm,  tol, maxit, stepsize, verbose){
+#' Title
+#'
+#' @param i_test
+#' @param X_perm
+#' @param y_perm
+#' @param end_index_folds
+#' @param algorithm
+#' @param tol
+#' @param maxit
+#' @param stepsize
+#' @param verbose
+#'
+#' @return
+#' @import dplyr
+#'
+#' @examples
+mymap <- function(i_test, X_perm, y_perm, end_index_folds, algorithm, tol, maxit, stepsize, verbose){
 
   range_test <- (end_index_folds[i_test]+1):end_index_folds[i_test+1]
   X_test <-  X_perm[range_test,]

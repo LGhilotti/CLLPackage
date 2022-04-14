@@ -15,23 +15,23 @@ linear_gd_optim(
 )
 }
 \arguments{
-\item{beta0}{[numeric] Initial values of coefficients}
+\item{beta0}{[numeric] Starting point of the iterative algorithm}
 
-\item{X}{[numeric] Matrix design}
+\item{X}{[numeric] Design matrix}
 
 \item{y}{[numeric] Response vector}
 
-\item{tol}{[numeric] Tolerance to implement a stop rule for the algorithm}
+\item{tol}{[numeric] Tolerance for stopping criteria}
 
-\item{maxit}{[numeric] Maximum number of iterations}
+\item{maxit}{[numeric] Maximum number of iterations for stopping criteria}
 
 \item{stepsize}{[numeric] Stepsize}
 
-\item{verbose}{[logical] TRUE if you want display messages; FALSE otherwise}
+\item{verbose}{[logical] verbose = TRUE prints some information on errors and number of iterations}
 }
 \value{
-[numeric] estimated coefficients through gradient algorithm
+[numeric] Estimated minimum point via gradient algorithm
 }
 \description{
-linear_gd_optim
+This function returns the minimum point via gradient algorithm
 }

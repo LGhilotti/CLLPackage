@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{gradient}
 \alias{gradient}
-\title{Gradient}
+\title{gradient}
 \usage{
 gradient(beta, X, y)
 }
@@ -11,11 +11,11 @@ gradient(beta, X, y)
 
 \item{X}{[numeric] Design matrix}
 
-\item{y}{[numeric] Data}
+\item{y}{[numeric] Response vector}
 }
 \value{
-[numeric] The gradient of the function
+[numeric] Gradient of loss function in linear models
 }
 \description{
-Gradient
+gradient
 }

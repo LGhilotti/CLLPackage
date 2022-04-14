@@ -77,6 +77,7 @@ kfold_cv_seq <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, ste
 #'
 #' @return [numeric] Mean Squared Error
 #' @export
+#' @import doSNOW parallel dplyr
 #'
 #' @examples
 kfold_cv_parallel <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, stepsize = 1e-3, verbose = FALSE){
@@ -95,6 +96,7 @@ kfold_cv_parallel <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000
   registerDoSNOW(cluster)
 
   # export dependencies in cluster
+  clusterEvalQ(cluster, {library(dplyr)})
   clusterExport(cluster, list("linear_sd_optim","linear_gd_optim","predict_y","compute_mse","gradient"))
 
   mse <- snow::parLapply(cl = cluster,
