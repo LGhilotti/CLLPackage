@@ -3,12 +3,12 @@
 # Package setup -----------------------------------------------------------
 
 ## Use version control
-# install.packages("usethis")
-#usethis::use_git_config(
+#  install.packages("usethis")
+# usethis::use_git_config(
 #  scope = "project",
 #  user.name = "Lorenzo Ghilotti",
 #  user.email = "lorenzoghilotti96@gmail.com"
-#)
+# )
 #usethis::use_git()
 
 

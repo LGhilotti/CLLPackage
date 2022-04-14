@@ -9,9 +9,9 @@ test_that("gradient descend works", {
 
   X = cbind(rep(1,n),x1,x2)
 
-  beta_est_gd <- linear_gd_optim(beta0, X, y, maxit = 100, stepsize = 0.5e-3, tol=1e-3)
+  beta_est_gd <- linear_gd_optim(beta0, X, y, tol=1e-3, maxit = 100, stepsize =1e-5)
 
-  beta_est_lm <- lm(y ~ x1 + x2)
+  beta_est_lm <- lm(y ~ x1 + x2)$coeff
 
-  expect_equal(beta_est_gd, beta_est_lm, tol = 0.2 )
+  expect_equal(beta_est_gd, as.vector(beta_est_lm), tolerance = 0.2 )
 })

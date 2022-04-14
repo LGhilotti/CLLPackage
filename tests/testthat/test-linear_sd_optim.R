@@ -1,4 +1,4 @@
-test_that("linear sd optim works", {
+test_that("steepest descend works", {
 
   #generate data
   set.seed(8675309)
@@ -11,12 +11,12 @@ test_that("linear sd optim works", {
   X = cbind(rep(1,n),x1,x2)
 
   #run linear sd
-  beta_estimated_sd <- linear_sd_optim(beta0, X, y, maxit = 1000, tol=1e-3)
+  beta_est_sd <- linear_sd_optim(beta0, X, y, tol=1e-3, maxit = 1000)
 
   #run lm
-  beta_lm = lm(y ~ x1 + x2)$coeff
+  beta_est_lm = lm(y ~ x1 + x2)$coeff
 
-  expect_equal(beta_estimated_sd,
-               beta_lm, tolerance = 0.2)
+  expect_equal(beta_est_sd,
+               as.vector(beta_est_lm), tolerance = 0.2)
 
 })
