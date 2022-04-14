@@ -100,18 +100,18 @@ The package includes a sequential ($\texttt{kfold_cv_seq()}$) and a parallel ($\
 
 ```{r, warning=F}
 library(tictoc)
-# Sequential CV
+# Sequential CV MSE
 tic()
-MSE_seq <- kfold_cv_seq(X,y,k=1000)
+(MSE_seq <- kfold_cv_seq(X,y,k=1000))
 toc()
 
-# Parallel CV
+# Parallel CV MSE
 tic()
-MSE_parallel <- kfold_cv_parallel(X,y,k=1000)
+(MSE_parallel <- kfold_cv_parallel(X,y,k=1000))
 toc()
 
 # lm MSE
-MSE <- mean(lm(y ~ x1 + x2)$residuals^2)
+(MSE <- mean(lm(y ~ x1 + x2)$residuals^2))
 
 ```
 To implement parallel CV, library $\texttt{doSNOW}$ has been used and $\textit{Map-Reduce paradigm}$ has been adopted: $map$ function includes data splitting into train and test sets, computing $\beta$ estimates, computing predictions and, finally, MSE. $Reduce$ function is mean computation of the $k$ MSE obtained during $map$ process.
