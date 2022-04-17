@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{mymap}
 \alias{mymap}
-\title{Title}
+\title{Compute MSE for cross-validation on specified fold}
 \usage{
 mymap(
   i_test,
@@ -17,11 +17,27 @@ mymap(
 )
 }
 \arguments{
-\item{verbose}{}
+\item{i_test}{[numeric] Index of the fold to be selected as test set}
+
+\item{X_perm}{[numeric] Design matrix}
+
+\item{y_perm}{[numeric] Observed response vector}
+
+\item{end_index_folds}{[numeric]}
+
+\item{algorithm}{[character] Type of algorithm to be run}
+
+\item{tol}{[numeric] Tolerance for stopping criteria}
+
+\item{maxit}{[numeric] Maximum number of iterations for stopping criteria}
+
+\item{stepsize}{[numeric] Stepsize - not used for steepest descend method}
+
+\item{verbose}{[logical]}
 }
 \value{
-
+[numeric] The MSE on the specified test fold
 }
 \description{
-Title
+Compute MSE for cross-validation on specified fold
 }

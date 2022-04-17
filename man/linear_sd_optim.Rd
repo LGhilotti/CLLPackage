@@ -2,7 +2,7 @@
 % Please edit documentation in R/steepest_descent.R
 \name{linear_sd_optim}
 \alias{linear_sd_optim}
-\title{linear_sd_optim}
+\title{Steepest descend algorithm}
 \usage{
 linear_sd_optim(beta0, X, y, tol = 0.001, maxit = 1000, verbose = T)
 }
@@ -11,13 +11,13 @@ linear_sd_optim(beta0, X, y, tol = 0.001, maxit = 1000, verbose = T)
 
 \item{X}{[numeric] Design matrix}
 
-\item{y}{[numeric] Response vector}
+\item{y}{[numeric] Observed response vector}
 
 \item{tol}{[numeric] Tolerance for stopping criteria}
 
 \item{maxit}{[numeric] Maximum number of iterations for stopping criteria}
 
-\item{verbose}{[character] verbose = TRUE prints some information on errors and number of iterations}
+\item{verbose}{[character]}
 }
 \value{
 [numeric] Estimated minimum point via steepest descend algorithm

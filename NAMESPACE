@@ -2,6 +2,7 @@
 
 export(compute_mse)
 export(gradient)
+export(kfold_cv_lm_seq)
 export(kfold_cv_parallel)
 export(kfold_cv_seq)
 export(linear_gd_optim)

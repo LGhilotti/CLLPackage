@@ -2,16 +2,18 @@
 % Please edit documentation in R/utils.R
 \name{predict_y}
 \alias{predict_y}
-\title{Title}
+\title{Predict responses given estimated parameters and new covariates}
 \usage{
 predict_y(beta_hat, X_test)
 }
 \arguments{
-\item{X_test}{}
+\item{beta_hat}{[numeric] Estimated parameters of linear model}
+
+\item{X_test}{[numeric] Design matrix for test covariates}
 }
 \value{
-
+[numeric] Predicted responses of the linear model
 }
 \description{
-Title
+Predict responses given estimated parameters and new covariates
 }

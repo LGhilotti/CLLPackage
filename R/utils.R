@@ -70,7 +70,6 @@ mymap <- function(i_test, X_perm, y_perm, end_index_folds, algorithm, tol, maxit
   X_train <- X_perm[-range_test,]
   y_test <-  y_perm[range_test]
   y_train <- y_perm[-range_test]
-  set.seed(8675309)
 
   beta0 <- rnorm(ncol(X_perm), 0, 1e+4)
   if (algorithm == "sd"){
@@ -97,6 +96,15 @@ mymap <- function(i_test, X_perm, y_perm, end_index_folds, algorithm, tol, maxit
 
 
 
+#' K-fold cross-validation for lm - sequential version
+#'
+#' @param X [numeric] Design matrix
+#' @param y [numeric] Observed response vector
+#' @param k [numeric] Number of folds
+#'
+#' @return [numeric] MSE provided by lm() R function through k-fold Cross-Validation
+#' @export
+#'
 kfold_cv_lm_seq <- function(X, y, k=5){
   n <- length(y)
   p <- ncol(X)

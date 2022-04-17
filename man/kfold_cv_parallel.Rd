@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict.R
 \name{kfold_cv_parallel}
 \alias{kfold_cv_parallel}
-\title{kfold_cv_parallel}
+\title{K-fold cross-validation - parallel version}
 \usage{
 kfold_cv_parallel(
   X,
@@ -18,9 +18,9 @@ kfold_cv_parallel(
 \arguments{
 \item{X}{[numeric] Design matrix}
 
-\item{y}{[numeric]Response vector}
+\item{y}{[numeric] Observed response vector}
 
-\item{k}{[numeric] Number of folds}
+\item{k}{[numeric] Number of folds - default is 5}
 
 \item{algorithm}{[string] "sd" for steepest descent method; "gd" for gradient descent method}
 
@@ -28,13 +28,13 @@ kfold_cv_parallel(
 
 \item{maxit}{[numeric] Maximum number of iterations for stopping criteria}
 
-\item{stepsize}{[numeric] Stepsize}
+\item{stepsize}{[numeric] Stepsize - not used for steepest descend method}
 
-\item{verbose}{[logical] verbose = TRUE prints some information on errors and number of iterations}
+\item{verbose}{[logical]}
 }
 \value{
-[numeric] Mean Squared Error
+[numeric] The k-fold cross-validation MSE - Mean Squared Error
 }
 \description{
-This function provides an MSE estimate of linear model predictions through a parallel k-fold cross validation method.
+This function provides the MSE estimate of linear model predictions through a parallel k-fold cross-validation method.
 }

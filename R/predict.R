@@ -19,7 +19,6 @@ kfold_cv_seq <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, ste
   n <- length(y)
   p <- ncol(X)
   Xy <- cbind(X,y)
-  set.seed(8675309)
 
   Xy_perm <- Xy[sample(1:n, size = n, replace = FALSE ),]
   X_perm <- Xy_perm[,1:p]
@@ -33,7 +32,6 @@ kfold_cv_seq <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, ste
     X_train <- X_perm[-range_test,]
     y_test <-  y_perm[range_test]
     y_train <- y_perm[-range_test]
-    set.seed(8675309)
 
     beta0 <- rnorm(p, 0, 1e+4)
     if (algorithm == "sd"){
@@ -79,7 +77,6 @@ kfold_cv_seq <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, ste
 #' @import doSNOW parallel dplyr
 #'
 kfold_cv_parallel <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, stepsize = 1e-3, verbose = FALSE){
-  set.seed(8675309)
   n <- length(y)
   p <- ncol(X)
   Xy <- cbind(X,y)

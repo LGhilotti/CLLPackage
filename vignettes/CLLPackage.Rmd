@@ -123,7 +123,7 @@ The $\textit{steepest descend}$ method solves the two issues by computing the $s
 ## Cross-validation
 The package includes a sequential ($\texttt{kfold_cv_seq()}$) and a parallel ($\texttt{kfold_cv_parallel()}$) implementation of the k-fold cross-validation procedure, which returns an estimate of the Mean Squared Error (MSE) of predictions based on the linear model, where $\beta$ is estimated via steepest or gradient descend method, according to the choice specified by the user (default option is steepest descend). 
 
-In the following example, the MSE is computed via $\texttt{kfold_cv_seq()}$, $\texttt{kfold_cv_parallel()}$ and $\texttt{lm()}$. It can be observed that they are similar. Moreover, for values of $k$, the number of folds, large enought, the execution time of $\texttt{kfold_cv_seq()}$ is longer than $\texttt{kfold_cv_parallel()}$, as expected. In fact, the parallel version starts to gain in terms of execution time when fixed costs related to cluster creation and splitting of the jobs to the workers are compensated.
+In the following example, the MSE is computed via $\texttt{kfold_cv_seq()}$, $\texttt{kfold_cv_parallel()}$ and $\texttt{kfold_cv_lm_seq()}$, which is a function that returns MSE computed performing k-fold cross-validation using R function $\texttt{lm()}$. It can be observed that they are similar. Moreover, for values for a sufficiently large value of $k$, which is the number of folds, the execution time of $\texttt{kfold_cv_seq()}$ is longer than $\texttt{kfold_cv_parallel()}$, as expected. In fact, the parallel version starts to gain in terms of execution time when fixed costs related to cluster creation and splitting of the jobs to the workers are compensated.
 
 ```{r, warning=F}
 library(tictoc)
@@ -138,7 +138,8 @@ tic()
 toc()
 
 # lm MSE
-(MSE <- mean(lm(y ~ x1 + x2)$residuals^2))
+#(MSE <- mean((lm(y ~ x1 + x2)$residuals)^2))
+(MSE <- kfold_cv_lm_seq(X = X, y=y, k=1000))
 
 ```
 To implement the parallel version, library $\texttt{doSNOW}$ has been used and map-reduce paradigm has been adopted: $map$ function includes the creation of the training and the test sets, the estimation of the $\beta$ on the training set, the predictions of the resposes on the test set and, finally, the computation of the MSE. $Reduce$ function  computes the average of the $k$ values of the MSE obtained during $map$ process.

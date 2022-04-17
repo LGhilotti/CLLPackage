@@ -2,7 +2,7 @@
 % Please edit documentation in R/gradient_descent.R
 \name{linear_gd_optim}
 \alias{linear_gd_optim}
-\title{linear_gd_optim}
+\title{Gradient descend method}
 \usage{
 linear_gd_optim(
   beta0,
@@ -19,7 +19,7 @@ linear_gd_optim(
 
 \item{X}{[numeric] Design matrix}
 
-\item{y}{[numeric] Response vector}
+\item{y}{[numeric] Observed response vector}
 
 \item{tol}{[numeric] Tolerance for stopping criteria}
 
@@ -27,11 +27,11 @@ linear_gd_optim(
 
 \item{stepsize}{[numeric] Stepsize}
 
-\item{verbose}{[logical] verbose = TRUE prints some information on errors and number of iterations}
+\item{verbose}{[logical]}
 }
 \value{
-[numeric] Estimated minimum point via gradient algorithm
+[numeric] Estimated minimum point via gradient descend algorithm
 }
 \description{
-This function returns the minimum point via gradient algorithm
+This function returns the minimum point via gradient descend algorithm
 }

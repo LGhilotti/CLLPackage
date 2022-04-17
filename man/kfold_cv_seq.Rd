@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict.R
 \name{kfold_cv_seq}
 \alias{kfold_cv_seq}
-\title{kfold_cv_seq}
+\title{K-fold cross-validation - sequential version}
 \usage{
 kfold_cv_seq(
   X,
@@ -18,9 +18,9 @@ kfold_cv_seq(
 \arguments{
 \item{X}{[matrix] Design matrix}
 
-\item{y}{[vector] Response vector}
+\item{y}{[vector] Observed response vector}
 
-\item{k}{[numeric] Number of folds}
+\item{k}{[numeric] Number of folds - default is 5}
 
 \item{algorithm}{[string] "sd" for steepest descent method; "gd" for gradient descent method}
 
@@ -28,13 +28,13 @@ kfold_cv_seq(
 
 \item{maxit}{[numeric] Maximum number of iterations for stopping criteria}
 
-\item{stepsize}{[numeric] Stepsize}
+\item{stepsize}{[numeric] Stepsize - not used for steepest descend method}
 
-\item{verbose}{[logical] verbose = TRUE prints some information on errors and number of iterations}
+\item{verbose}{[logical]}
 }
 \value{
-[numeric] Mean Squared Error
+[numeric] The k-fold cross-validation MSE - Mean Squared Error
 }
 \description{
-This function provides a MSE estimate of linear model predictions through a k-fold cross validation method.
+This function provides the MSE estimate of linear model predictions through the k-fold cross-validation method.
 }

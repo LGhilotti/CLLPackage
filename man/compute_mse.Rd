@@ -2,16 +2,18 @@
 % Please edit documentation in R/utils.R
 \name{compute_mse}
 \alias{compute_mse}
-\title{Title}
+\title{Compute MSE - Mean Squared Error}
 \usage{
 compute_mse(y_observed, y_predicted)
 }
 \arguments{
-\item{y_predicted}{}
+\item{y_observed}{[numeric] Observed values for the response variable}
+
+\item{y_predicted}{[numeric] Predicted values for the response variable}
 }
 \value{
-
+[numeric] The MSE produced by the linear model
 }
 \description{
-Title
+Compute MSE - Mean Squared Error
 }
