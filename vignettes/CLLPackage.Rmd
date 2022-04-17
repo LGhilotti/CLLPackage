@@ -138,7 +138,6 @@ tic()
 toc()
 
 # lm MSE
-#(MSE <- mean((lm(y ~ x1 + x2)$residuals)^2))
 (MSE <- kfold_cv_lm_seq(X = X, y=y, k=1000))
 
 ```
