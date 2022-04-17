@@ -1,21 +1,20 @@
 
-#' kfold_cv_seq
+#' K-fold cross-validation - sequential version
 #'
-#' This function provides a MSE estimate of linear model predictions through a k-fold cross validation method.
+#' This function provides the MSE estimate of linear model predictions through the k-fold cross-validation method.
 #'
 #' @param X [matrix] Design matrix
-#' @param y [vector] Response vector
-#' @param k [numeric] Number of folds
+#' @param y [vector] Observed response vector
+#' @param k [numeric] Number of folds - default is 5
 #' @param algorithm [string] "sd" for steepest descent method; "gd" for gradient descent method
 #' @param tol [numeric] Tolerance for stopping criteria
 #' @param maxit [numeric] Maximum number of iterations for stopping criteria
-#' @param stepsize [numeric] Stepsize
-#' @param verbose [logical] verbose = TRUE prints some information on errors and number of iterations
+#' @param stepsize [numeric] Stepsize - not used for steepest descend method
+#' @param verbose [logical]
 #'
-#' @return [numeric] Mean Squared Error
+#' @return [numeric] The k-fold cross-validation MSE - Mean Squared Error
 #' @export
 #'
-#' @examples
 kfold_cv_seq <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, stepsize = 1e-3, verbose = FALSE){
   n <- length(y)
   p <- ncol(X)
@@ -43,7 +42,7 @@ kfold_cv_seq <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, ste
       beta_est <- linear_gd_optim(beta0, X_train, y_train,  tol, maxit, stepsize, verbose)
     }
     else {
-      print("Not valid option")
+      print("Not valid option - use gd (gradient descend) or sd (steepest descend)")
       break
     }
 
@@ -62,24 +61,23 @@ kfold_cv_seq <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, ste
 
 
 
-#' kfold_cv_parallel
+#' K-fold cross-validation - parallel version
 #'
-#' This function provides an MSE estimate of linear model predictions through a parallel k-fold cross validation method.
+#' This function provides the MSE estimate of linear model predictions through a parallel k-fold cross-validation method.
 #'
 #' @param X [numeric] Design matrix
-#' @param y [numeric]Response vector
-#' @param k [numeric] Number of folds
+#' @param y [numeric] Observed response vector
+#' @param k [numeric] Number of folds - default is 5
 #' @param algorithm [string] "sd" for steepest descent method; "gd" for gradient descent method
 #' @param tol [numeric] Tolerance for stopping criteria
 #' @param maxit [numeric] Maximum number of iterations for stopping criteria
-#' @param stepsize [numeric] Stepsize
-#' @param verbose [logical] verbose = TRUE prints some information on errors and number of iterations
+#' @param stepsize [numeric] Stepsize - not used for steepest descend method
+#' @param verbose [logical]
 #'
-#' @return [numeric] Mean Squared Error
+#' @return [numeric] The k-fold cross-validation MSE - Mean Squared Error
 #' @export
 #' @import doSNOW parallel dplyr
 #'
-#' @examples
 kfold_cv_parallel <- function(X, y, k=5, algorithm = "sd", tol=1e-3, maxit= 1000, stepsize = 1e-3, verbose = FALSE){
   set.seed(8675309)
   n <- length(y)

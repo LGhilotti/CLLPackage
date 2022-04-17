@@ -1,29 +1,21 @@
 
-#' linear_gd_optim
+#' Gradient descend method
 #'
-#' This function returns the minimum point via gradient algorithm
+#' This function returns the minimum point via gradient descend algorithm
 #'
 #' @param beta0 [numeric] Starting point of the iterative algorithm
 #' @param X [numeric] Design matrix
-#' @param y [numeric] Response vector
+#' @param y [numeric] Observed response vector
 #' @param tol [numeric] Tolerance for stopping criteria
 #' @param maxit [numeric] Maximum number of iterations for stopping criteria
 #' @param stepsize [numeric] Stepsize
-#' @param verbose [logical] verbose = TRUE prints some information on errors and number of iterations
+#' @param verbose [logical]
 #'
-#' @return [numeric] Estimated minimum point via gradient algorithm
+#' @return [numeric] Estimated minimum point via gradient descend algorithm
 #' @export
 #'
-#' @examples
-linear_gd_optim <- function(beta0, # beta(0)
-                            X, # data predictors
-                            y, # response variable
-                            tol=1e-3, # tolerance
-                            maxit=1000, # max iteration, not to run forever
-                            stepsize=1e-3, # stepsize parameter
-                            verbose=T) # should the function write messages?
-
-{
+linear_gd_optim <- function(beta0, X, y, tol=1e-3, maxit=1000,
+                            stepsize=1e-3, verbose=T) {
   it <- 0
   err <- tol +1
   beta_new <- beta0

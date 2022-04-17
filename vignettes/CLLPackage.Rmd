@@ -18,16 +18,27 @@ knitr::opts_chunk$set(
 library(CLLPackage)
 ```
 
-The aim of this package is to provide functions that estimate coefficients of a linear model through two different methods, the \textit{gradient descend} and the $\textit{steepest descend}$ methods. Moreover, a $k$-folds cross-validation function is also implemented both in a sequential way and in a parallel one.
+The purpose of this package is to provide functionalities to estimate the regression coefficients of the linear model
+$$Y = X\beta+\varepsilon$$
+where $X$ is the design matrix, $Y$ a response variable, $\beta$ a coefficients vector and $\varepsilon$ a normal random noise. The estimation is performed by minimizing the loss function 
+$$L(\beta)=||X\beta-Y||_2^2$$
+
+Two different iterative minimization methods are available in the package, the $\textit{gradient descend}$ and the $\textit{steepest descend}$ methods. Moreover, a $k$-fold cross-validation procedure is provided, using the MSE (Mean Squared Error) as performance index. Sequential and parallel versions are implemented for this task.
 
 
 ## Gradient descend method
-This function implements the gradient descend optimization applied to linear models $$Y = X\beta+\varepsilon$$
-where $X$ is the design matrix, $Y$ a response variable, $\beta$ a coefficients vector and $\varepsilon$ a normal random noise.
-Gradient descend method computes the coefficients that minimize the loss function
-$$L=(X\beta-Y)^2$$
-This is an iterative algorithm, that computes an estimate of $\beta$ at each step and stops only when some stopping rule is reached, i.e. when a maximum number of iterations is reached or when the new estimate improvement is lower than a certain value, called $\textit{tolerance}$. Both the tolerance and the maximum number of iterations can be chosen by the user.
-At each step, estimates are updated using the gradient of the loss function evaluated in the estimate at previous step, multiplied by the $\textit{stepsize}$ $\gamma$, that can be chosen by the user. \ The following is an example of function $\texttt{ linear_gd_optim()}$. Comparing the estimates obtained with $\textit{gradient descend}$ method and the ones computed by $\texttt{lm()}$ R function, it is clear that estimates are quite similar.
+The gradient descend algorithm proceeds as follows:
+
+1. The initial point $\hat{\beta}(0)$ is chosen.
+
+2. For $t=0,1,\ldots$, the new iterate $\hat{\beta}(t+1)$ is obtained by the rule:
+  $$\hat{\beta}(t+1) = \hat{\beta}(t) -\gamma \nabla L(\hat{\beta}(t))
+  $$
+  where $\gamma>0$ is the $\textit{stepsize}$ (chosen by the user).
+  
+3. Stop the procedure when the stopping conditions are satisfied. In the package, two criteria are implemented: the maximum number of iterations $\textit{maxit}$ and a condition on non-significant improvements of the estimate, i.e. $\max_i|\hat{\beta}_i(t+1) - \hat{\beta}_i(t)|< tol$, where $\textit{tol}$ is a pre-specified tolerance.
+
+The following is an example of the use of the function $\texttt{ linear_gd_optim()}$. Note that the performance of the algorithm strongly depends on the choice of the parameters $\textit{tol, maxit}, \gamma$. Here, the parameters are chosen properly. Later, some considerations on this issue are discussed. Comparing the estimates obtained with $\textit{gradient descend}$ method and the ones computed by $\texttt{lm()}$ R function, it is clear that estimates are quite similar.
 
 ```{r}
 set.seed(8675309)
@@ -51,9 +62,23 @@ X<-cbind(rep(1,n),x1,x2)
 
 
 ## Steepest descend method
-This is an iterative method, as the previous one, which as well computes the coefficients that minimize the loss function
-$$L=(X\beta-Y)^2$$
-At each step, estimates are updated using the gradient of the loss function evaluated at the estimate at previous step, multiplied by a a scalar value $step_t$ which takes into account the values of the Hessian matrix of $L$ and of its gradient both evaluated in the estimate at previous step. This is the main difference with respect to  $\textit{gradient descend}$ method, where the  $\textit{stepsize}$ was chosen by the user and constant during the entire algorithm. Similarly to  $\textit{gradient descend}$ method, $\textit{steepest descend}$ algorithm stops when a maximum number of iterations is reached or when the new estimate improvement is lower than a certain value, called $\textit{tolerance}$. Both the tolerance and the maximum number of iterations can be chosen by the user. \ The following is an example of function $\texttt{ linear_sd_optim()}$. Comparing the estimates obtained with $\textit{steepest descend}$ method and the ones computed by $\texttt{lm()}$ R function, it is clear that estimates are quite similar.
+The steepest descend algorithm proceeds as follows:
+
+1. The initial point $\hat{\beta}(0)$ is chosen.
+
+2. For $t=0,1,\ldots$, the new iterate $\hat{\beta}(t+1)$ is obtained by the rule:
+  $$\hat{\beta}(t+1) = \hat{\beta}(t) -\text{step}(t) \cdot \nabla L(\hat{\beta}(t))
+  $$
+  where, denoting with $H(\hat{\beta}(t)) = 4X^T X$ the Hessian of $L$, 
+  $$\text{step}(t) = \frac{||\nabla L(\hat{\beta}(t))||^2}{\nabla L(\hat{\beta}(t))^T\, H(\hat{\beta}(t)) \,\nabla L(\hat{\beta}(t))}
+  $$ 
+  
+3. Stop the procedure when the stopping conditions are satisfied. Similarly to the gradient descend algorithm, two criteria are implemented: the maximum number of iterations $\textit{maxit}$ and a condition on non-significant improvements of the estimate, i.e. $\max_i|\hat{\beta}_i(t+1) - \hat{\beta}_i(t)|< tol$, where $\textit{tol}$ is a pre-specified tolerance.
+\end{itemize}
+
+Differently from the gradient descend method, where the  $\textit{stepsize}$ was chosen by the user and fixed during the whole procedure, here the stepsize $\text{step}(t)$ is automatically computed and varies during the iterations.
+
+The following is an example of the use of the function $\texttt{ linear_sd_optim()}$. Comparing the estimates obtained with $\textit{steepest descend}$ method and the ones computed by $\texttt{lm()}$ R function, it is clear that estimates are quite similar.
 
 ```{r}
 # beta estimated with gradient descend method

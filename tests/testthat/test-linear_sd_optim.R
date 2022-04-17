@@ -10,7 +10,7 @@ test_that("steepest descend works", {
   beta0=c(0,0,0)
   X = cbind(rep(1,n),x1,x2)
 
-  #run linear sd
+  #run linear_sd_optim
   beta_est_sd <- linear_sd_optim(beta0, X, y, tol=1e-3, maxit = 1000)
 
   #run lm

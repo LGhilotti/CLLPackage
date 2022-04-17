@@ -1,8 +1,8 @@
-#' gradient
+#' Gradient of the loss function
 #'
 #' @param beta [numeric] Point where to evaluate the gradient
 #' @param X [numeric] Design matrix
-#' @param y [numeric] Response vector
+#' @param y [numeric] Observed response vector
 #'
 #' @return [numeric] Gradient of loss function in linear models
 #'
@@ -14,15 +14,14 @@ gradient <- function(beta, X,y) {
 
 
 
-#' Title
+#' Predict responses given estimated parameters and new covariates
 #'
-#' @param beta_hat
-#' @param X_test
+#' @param beta_hat [numeric] Estimated parameters of linear model
+#' @param X_test [numeric] Design matrix for test covariates
 #'
-#' @return
+#' @return [numeric] Predicted responses of the linear model
 #' @export
 #'
-#' @examples
 predict_y <- function(beta_hat, X_test){
 
   return (X_test %*% beta_hat)
@@ -32,15 +31,14 @@ predict_y <- function(beta_hat, X_test){
 
 
 
-#' Title
+#' Compute MSE - Mean Squared Error
 #'
-#' @param y_observed
-#' @param y_predicted
+#' @param y_observed [numeric] Observed values for the response variable
+#' @param y_predicted [numeric] Predicted values for the response variable
 #'
-#' @return
+#' @return [numeric] The MSE produced by the linear model
 #' @export
 #'
-#' @examples
 compute_mse <- function(y_observed, y_predicted){
 
   return (mean((y_observed - y_predicted)^2))
@@ -50,23 +48,21 @@ compute_mse <- function(y_observed, y_predicted){
 
 
 
-
-#' Title
+#' Compute MSE for cross-validation on specified fold
 #'
-#' @param i_test
-#' @param X_perm
-#' @param y_perm
-#' @param end_index_folds
-#' @param algorithm
-#' @param tol
-#' @param maxit
-#' @param stepsize
-#' @param verbose
+#' @param i_test [numeric] Index of the fold to be selected as test set
+#' @param X_perm [numeric] Design matrix
+#' @param y_perm [numeric] Observed response vector
+#' @param end_index_folds [numeric]
+#' @param algorithm [character] Type of algorithm to be run
+#' @param tol [numeric] Tolerance for stopping criteria
+#' @param maxit [numeric] Maximum number of iterations for stopping criteria
+#' @param stepsize [numeric] Stepsize - not used for steepest descend method
+#' @param verbose [logical]
 #'
-#' @return
+#' @return [numeric] The MSE on the specified test fold
 #' @import dplyr
 #'
-#' @examples
 mymap <- function(i_test, X_perm, y_perm, end_index_folds, algorithm, tol, maxit, stepsize, verbose){
 
   range_test <- (end_index_folds[i_test]+1):end_index_folds[i_test+1]
@@ -83,7 +79,7 @@ mymap <- function(i_test, X_perm, y_perm, end_index_folds, algorithm, tol, maxit
     beta_est <- linear_gd_optim(beta0, X_train, y_train,  tol, maxit, stepsize, verbose)
   }
   else {
-    print("Not valid option")
+    print("Not valid option - use gd (gradient descend) or sd (steepest descend)")
     break
   }
 
@@ -91,12 +87,6 @@ mymap <- function(i_test, X_perm, y_perm, end_index_folds, algorithm, tol, maxit
 
   return (compute_mse(y_test, y_pred))
 }
-
-
-
-
-
-
 
 
 
