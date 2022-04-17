@@ -141,5 +141,5 @@ toc()
 (MSE <- kfold_cv_lm_seq(X = X, y=y, k=1000))
 
 ```
-To implement the parallel version, library $\texttt{doSNOW}$ has been used and map-reduce paradigm has been adopted: $map$ function includes the creation of the training and the test sets, the estimation of the $\beta$ on the training set, the predictions of the resposes on the test set and, finally, the computation of the MSE. $Reduce$ function  computes the average of the $k$ values of the MSE obtained during $map$ process.
+To implement the parallel version, library $\texttt{doSNOW}$ has been used and map-reduce paradigm has been adopted: $map$ function includes the creation of the training and the test sets, the estimation of the $\beta$ on the training set, the predictions of the responses on the test set and, finally, the computation of the MSE. $Reduce$ function  computes the average of the $k$ values of the MSE obtained during $map$ process.
 

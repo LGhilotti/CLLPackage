@@ -6,10 +6,11 @@ The goal of CLLPackage is to provide some alternative methods to estimate coeffi
 
 ## Installation
 
-You can install the released version of CLLPackage from [CRAN](https://CRAN.R-project.org) with:
+You can install the released version of CLLPackage with the following link:
 
 ``` r
 install.packages("CLLPackage")
+remotes::install_github("LGhilotti/CLLPackage")
 ```
 
 ## Example
