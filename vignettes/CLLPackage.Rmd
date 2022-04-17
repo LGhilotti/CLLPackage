@@ -38,7 +38,7 @@ The gradient descend algorithm proceeds as follows:
   
 3. Stop the procedure when the stopping conditions are satisfied. In the package, two criteria are implemented: the maximum number of iterations $\textit{maxit}$ and a condition on non-significant improvements of the estimate, i.e. $\max_i|\hat{\beta}_i(t+1) - \hat{\beta}_i(t)|< tol$, where $\textit{tol}$ is a pre-specified tolerance.
 
-The following is an example of the use of the function $\texttt{ linear_gd_optim()}$. Note that the performance of the algorithm strongly depends on the choice of the parameters $\textit{tol, maxit}, \gamma$. Here, the parameters are chosen properly. Later, some considerations on this issue are discussed. Comparing the estimates obtained with $\textit{gradient descend}$ method and the ones computed by $\texttt{lm()}$ R function, it is clear that estimates are quite similar.
+The following is an example of the use of the function $\texttt{ linear_gd_optim()}$. Note that the performance of the algorithm strongly depends on the choice of the parameters $\textit{tol, maxit}, \gamma$. In this example, the parameters are chosen properly. Later, some considerations on this issue are discussed. Comparing the estimates obtained with $\textit{gradient descend}$ method and the ones computed by $\texttt{lm()}$ R function, it is clear that estimates are quite similar.
 
 ```{r}
 set.seed(8675309)
@@ -74,54 +74,56 @@ The steepest descend algorithm proceeds as follows:
   $$ 
   
 3. Stop the procedure when the stopping conditions are satisfied. Similarly to the gradient descend algorithm, two criteria are implemented: the maximum number of iterations $\textit{maxit}$ and a condition on non-significant improvements of the estimate, i.e. $\max_i|\hat{\beta}_i(t+1) - \hat{\beta}_i(t)|< tol$, where $\textit{tol}$ is a pre-specified tolerance.
-\end{itemize}
 
-Differently from the gradient descend method, where the  $\textit{stepsize}$ was chosen by the user and fixed during the whole procedure, here the stepsize $\text{step}(t)$ is automatically computed and varies during the iterations.
+Differently from the gradient descend method, where the  $\textit{stepsize}$ was chosen by the user and fixed during the whole procedure, here the stepsize $\text{step}(t)$ is automatically computed and varies along the iterations.
 
 The following is an example of the use of the function $\texttt{ linear_sd_optim()}$. Comparing the estimates obtained with $\textit{steepest descend}$ method and the ones computed by $\texttt{lm()}$ R function, it is clear that estimates are quite similar.
 
 ```{r}
 # beta estimated with gradient descend method
-(beta_estimated_sd <- linear_sd_optim(beta0, X, y, maxit = 1000, tol=1e-3))
+(beta_estimated_sd <- linear_sd_optim(beta0, X, y, maxit = 1000, tol=1e-4))
 
 # beta estimated with OLS
 (beta_min <- lm(y ~ x1 + x2)$coeff)
 ```
 
-### Comparison between gradiend and steepest descend methods
-As said before, the main difference between the two methods consists of $\textit{stepsize}$ choice, which modulates step length along the direction specified by the gradient: in $\textit{gradient descend}$ algorithm it is chosen by the user and remains the same for the whole iterative process, in $\textit{steepest descend}$ methods it is computed by the algorithm based on the previous estimate of $\beta$, thus it better fits the data. Two main issues that can be encountered performing $\textit{gradient descend}$ method are the following ones:
+### Comparison between gradient and steepest descend methods
+As already pointed out, the difference between the two methods consists of the $\textit{stepsize}$ choice, which modulates step length along the direction identified by the gradient: in the $\textit{gradient descend}$ algorithm it is chosen by the user and remains fixed for the whole iterative process, while in the $\textit{steepest descend}$ methods it is automatically computed by the algorithm based on the current estimate of $\beta$, thus it should better exploit the geometry of the problem.
 
-1. a pre-specified too large $\textit{stepsize}$ can result in overcoming the value of $\beta$ that minimizes the loss function and in continous bouncing from a non-optimal solution to another one. In the following example, the error does not decrease with iterations, even reaching $Inf$ value.
+Two main issues can be encountered performing the $\textit{gradient descend}$ method:
+
+1. if the pre-specified $\textit{stepsize}$, $\gamma$, is too large for the problem, the algorithm might never converge to the minimum, since it keeps bouncing around the optimal solution and possibly diverges from it. In the following example, the error does not decrease along the iterations, even reaching $Inf$ value.
 
 
 ```{r}
 beta0 <- c(0,0,0)
 # beta estimated with gradient descend method
-beta_estimated_gd <- linear_gd_optim(beta0, X, y, maxit = 10000, stepsize = 1e-3, tol=1e-3)
+beta_estimated_gd <- linear_gd_optim(beta0, X, y, maxit = 10000, stepsize = 1e-2, tol=1e-2)
 
 ```
-GRAFICO CON PUNTI DELLE SOLUZIONI???? 
 
-2. Due to the fact that $stepsize$ value is set at the beginning and remains constant during the algorithm, it is important to choose values for $stepsize$ and $tolerance$ with the same order of magnitude. Otherwise, if $stepsize$ is too small with respect to $tolerance$, the algorithm could stop too early having no chance to reach the solution to the minimization problem. In the following example, comparing estimates provided by $\texttt{linear_gd_optim()}$ and the ones provided by $\texttt{lm()}$ it is clear that the $\textit{gradient descend}$ method could not reach the minimum point.
+2. for good performance of the algorithm, it is important to choose values for $stepsize$ and $tolerance$ with the same order of magnitude. Otherwise, if $stepsize$ is too small with respect to $tolerance$, the algorithm might stop too early having no chance to reach the solution to the minimization problem. In the following example, comparing estimates provided by $\texttt{linear_gd_optim()}$ and the ones provided by $\texttt{lm()}$, it is clear that the $\textit{gradient descend}$ method has not reached the minimum point.
 
 ```{r}
 beta0 <- c(0,0,0)
 X<-cbind(rep(1,n),x1,x2)
 
 # beta estimated with gradient descend method
-(beta_estimated_gd <- linear_gd_optim(beta0, X, y, maxit = 10000, stepsize = 1e-6, tol=1e-3))
+(beta_estimated_gd <- linear_gd_optim(beta0, X, y, maxit = 10000, stepsize = 1e-6, tol=1e-2))
 
 # beta estimated with OLS
 (beta_min = lm(y ~ x1 + x2)$coeff)
 
 ```
 
-$\textit{Steepest descend}$ method solves the two issues described before by computing the $stepsize$ inside the algorithm taking into account the previous estimate of $\beta$.
+The $\textit{steepest descend}$ method solves the two issues by computing the $stepsize$ for each iteration, taking into account the previous estimate of $\beta$.
 
 
 
 ## Cross-validation
-The package includes a sequential ($\texttt{kfold_cv_seq()}$) and a parallel ($\texttt{kfold_cv_parallel()}$) implementation of a $\textit{k-fold cross-validation}$, which returns an estimate of the $\textit{Mean Squared Error (MSE)}$ of predictions based on the linear model with estimated $\beta$ via $steepest$ or $gradient$ descend method, according to the choice specified by the user (default option is $\textit{steepest descend}$). In the following example, $MSE$ computed via $\texttt{kfold_cv_seq()}$, $\texttt{kfold_cv_parallel()}$ and $lm()$ are consistent. Moreover, the execution time of $\texttt{kfold_cv_seq()}$ is longer than $\texttt{kfold_cv_parallel()}$, as expected. It is reasonable that parallel CV gain in terms of time is higher when fixed costs related to cluster creation and splitting of the job in different cores are compensated.
+The package includes a sequential ($\texttt{kfold_cv_seq()}$) and a parallel ($\texttt{kfold_cv_parallel()}$) implementation of the k-fold cross-validation procedure, which returns an estimate of the Mean Squared Error (MSE) of predictions based on the linear model, where $\beta$ is estimated via steepest or gradient descend method, according to the choice specified by the user (default option is steepest descend). 
+
+In the following example, the MSE is computed via $\texttt{kfold_cv_seq()}$, $\texttt{kfold_cv_parallel()}$ and $\texttt{lm()}$. It can be observed that they are similar. Moreover, for values of $k$, the number of folds, large enought, the execution time of $\texttt{kfold_cv_seq()}$ is longer than $\texttt{kfold_cv_parallel()}$, as expected. In fact, the parallel version starts to gain in terms of execution time when fixed costs related to cluster creation and splitting of the jobs to the workers are compensated.
 
 ```{r, warning=F}
 library(tictoc)
@@ -139,5 +141,5 @@ toc()
 (MSE <- mean(lm(y ~ x1 + x2)$residuals^2))
 
 ```
-To implement parallel CV, library $\texttt{doSNOW}$ has been used and $\textit{Map-Reduce paradigm}$ has been adopted: $map$ function includes data splitting into train and test sets, computing $\beta$ estimates, computing predictions and, finally, MSE. $Reduce$ function is mean computation of the $k$ MSE obtained during $map$ process.
+To implement the parallel version, library $\texttt{doSNOW}$ has been used and map-reduce paradigm has been adopted: $map$ function includes the creation of the training and the test sets, the estimation of the $\beta$ on the training set, the predictions of the resposes on the test set and, finally, the computation of the MSE. $Reduce$ function  computes the average of the $k$ values of the MSE obtained during $map$ process.
 
