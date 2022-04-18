@@ -2,7 +2,7 @@
 
 <!-- badges: start -->
 <!-- badges: end -->
-The goal of CLLPackage is to provide some alternative methods to estimate coefficient of a linear model. The first method implemented is based on descend gradient approach and the second one is based on steepest gradient approach. In order to compute MSE on predictions obtained with a linear model, implementation of a k-fold cross-validation function both in sequential and in parallel way is available. 
+The goal of CLLPackage is to provide alternative methods to estimate coefficients of a linear model. The first method implemented is based on descend gradient approach and the second one is based on steepest gradient approach. In order to compute MSE on predictions obtained with a linear model, implementation of a k-fold cross-validation function both in sequential and in parallel way is available. 
 
 ## Installation
 
@@ -15,7 +15,7 @@ remotes::install_github("LGhilotti/CLLPackage")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example which shows you how to use the main functions implemented in the package in order to estimate linear model coefficients and to compute MSE on predictions:
 
 ``` r
 library(CLLPackage)
