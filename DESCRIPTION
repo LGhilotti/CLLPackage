@@ -2,12 +2,14 @@ Package: CLLPackage
 Type: Package
 Title: This package implements descend gradient and steepest descend methods for estimating linear model coefficients
 Version: 0.1.0
-Author: Luca Danese, Lorenzo Ghilotti, Chiara Gaia Magnani
-Maintainer: The package maintainer l.ghilotti@campus.unimib.it
+Author: Luca Danese, 
+    Lorenzo Ghilotti,
+    Chiara Gaia Magnani
+Maintainer: Lorenzo Ghilotti <l.ghilotti@campus.unimib.it>
 Description: The goal of CLLPackage is to provide alternative methods to estimate 
-coefficients of a linear model. The first method implemented is based on descend gradient
-approach and the second one is based on steepest gradient approach. In order to compute MSE on predictions obtained with a linear model, implementation of a
-k-fold cross-validation function both in sequential and in parallel way is available. 
+    coefficients of a linear model. The first method implemented is based on descend gradient
+    approach and the second one is based on steepest gradient approach. In order to compute MSE on predictions obtained with a linear model, implementation of a
+    k-fold cross-validation function both in sequential and in parallel way is available. 
 License: No license
 Encoding: UTF-8
 LazyData: true
